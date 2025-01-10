@@ -1,6 +1,6 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
+import axios from "axios";
 
 const Edit = () => {
   const { id } = useParams("");
@@ -18,13 +18,10 @@ const Edit = () => {
   });
 
   const getdata = async (e) => {
-    const res = await fetch(`/getuser/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
-    const data = await res.json();
+    const res = await axios.get(
+      `https://backend-curd-mern.onrender.com/api/v1/user/getuser/${id}`
+    );
+    const data = await res.data;
     if (res.status === 404 || !data) {
       console.log("error ");
     } else {
@@ -34,7 +31,7 @@ const Edit = () => {
 
   useEffect(() => {
     getdata();
-  },[]);
+  }, []);
 
   const setData = (el) => {
     console.log(el.target.value);
@@ -47,44 +44,28 @@ const Edit = () => {
     });
   };
 
-  const updateuser = async(e)=> {
+  const updateuser = async (e) => {
     e.preventDefault();
-    const {
-      name,
-      email,
-      age,
-      number,
-      work,
-      add,
-      desc,
-    } = inpVal;
-    const res2 = await fetch(`/updateuser/${id}`,{
-      method: "PATCH",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body:JSON.stringify({
-        name,
-        email,
-        age,
-        number,
-        work,
-        add,
-        desc,
-      })
-
-    })
-    const data2 = await res2.json();
+    const { name, email, age, number, work, add, desc } = inpVal;
+    const res2 = await axios.patch(
+      `https://backend-curd-mern.onrender.com/api/v1/user/updateuser/${id}`,
+      JSON.stringify({ name, email, age, number, work, add, desc }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data2 = await res2.data;
     console.log(data2);
 
-    if (res2.status === 422 || !data2) {
-      alert("fill the data!")
+    if (res2.status === 404 || !data2) {
+      alert("fill the data!");
     } else {
-      alert("data added!")
-      navigate('/')
+      alert("data added!");
+      navigate("/");
     }
-    
-  }
+  };
   return (
     <div className="container">
       <form className="mt-5">

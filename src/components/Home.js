@@ -3,17 +3,14 @@ import { Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
+import axios from 'axios';
 
 function Home() {
   const [getUserData, setUserData] = useState([]);
+  
   const getdata = async (e) => {
-    const res = await fetch("/getdata", {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
-    const data = await res.json();
+    const res = await axios.get(`https://backend-curd-mern.onrender.com/api/v1/user/getdata`);
+    const data = await res.data;
     if (res.status === 404 || !data) {
       console.log("error ");
     } else {
@@ -26,13 +23,8 @@ function Home() {
   }, []);
 
   const deleteuser = async(id)=> {
-    const res2 = await fetch(`/deleteuser/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-type": "application/json",
-      }
-    });
-    const deletedata = await res2.json();
+    const res2 = await axios.delete(`https://backend-curd-mern.onrender.com/api/v1/user/deleteuser/${id}`);
+    const deletedata = await res2.data;
     console.log(deletedata);
     
     if (res2.status === 422 || !deletedata) {

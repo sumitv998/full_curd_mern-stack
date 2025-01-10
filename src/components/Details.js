@@ -12,52 +12,51 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 const Details = () => {
+  const { id } = useParams("");
+  console.log("id", id);
 
-  const {id}= useParams("");
-  console.log("id",id);
-  
   const navigate = useNavigate("");
 
-    const [getUserData, setUserData] = useState([]);
-    console.log(getUserData);
-    
-    const getdata = async (e) => {
-      const res = await fetch(`/getuser/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
-      const data = await res.json();
-      if (res.status === 404 || !data) {
-        console.log("error ");
-      } else {
-        setUserData(data);
-      }
-    };
-  
-    useEffect(() => {
-      getdata();
-    });
+  const [getUserData, setUserData] = useState([]);
+  console.log(getUserData);
 
-    const deleteuser = async(id)=> {
-      const res2 = await fetch(`/deleteuser/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-type": "application/json",
-        }
-      });
-      const deletedata = await res2.json();
-      console.log(deletedata);
-      
-      if (res2.status === 422 || !deletedata) {
-        alert("error");
-      } else {
-        alert("user deleted!");
-        navigate('/')
-      }
+  const getdata = async (e) => {
+    const res = await fetch(`/getuser/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    const data = await res.json();
+    if (res.status === 404 || !data) {
+      console.log("error ");
+    } else {
+      setUserData(data);
     }
-  
+  };
+
+  useEffect(() => {
+    getdata();
+  });
+
+  const deleteuser = async (id) => {
+    const res2 = await fetch(`/deleteuser/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    const deletedata = await res2.json();
+    console.log(deletedata);
+
+    if (res2.status === 422 || !deletedata) {
+      alert("error");
+    } else {
+      alert("user deleted!");
+      navigate("/");
+    }
+  };
+
   return (
     <div className="container mt-3">
       <h1 style={{ fontWeight: 400 }}>Wellcome sumit!</h1>
@@ -65,11 +64,14 @@ const Details = () => {
         <CardContent>
           <div className="add_btn">
             <Link to={`/edit/${getUserData._id}`}>
-            <button className="btn btn-primary mx-2">
-              <CreateIcon />
-            </button>
+              <button className="btn btn-primary mx-2">
+                <CreateIcon />
+              </button>
             </Link>
-            <button className="btn btn-danger" onClick={()=> deleteuser(getUserData._id)}>
+            <button
+              className="btn btn-danger"
+              onClick={() => deleteuser(getUserData._id)}
+            >
               <DeleteIcon />
             </button>
           </div>
@@ -94,17 +96,15 @@ const Details = () => {
 
             <div className="right_view col-lg-6 col-md-6 col-12">
               <p>
-                <MobileScreenShareIcon /> mobile: <span>{getUserData.number}</span>
+                <MobileScreenShareIcon /> mobile:{" "}
+                <span>{getUserData.number}</span>
               </p>
               <p>
                 <PlaceIcon /> location: <span>{getUserData.add}</span>
               </p>
               <p>
                 <DescriptionIcon />
-                Description:{" "}
-                <span>
-                  {getUserData.desc}
-                </span>
+                Description: <span>{getUserData.desc}</span>
               </p>
             </div>
           </div>
